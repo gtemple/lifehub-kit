@@ -1,0 +1,24 @@
+.ac-drawer { border-left-color: var(--lg-border); }
+.ac-head { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--lg-line); }
+.ac-title { font: 500 22px var(--lg-head); letter-spacing: -0.01em; }
+.ac-x { background: transparent; color: var(--lg-dim); font-size: 16px; }
+.ac-filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px 24px; border-bottom: 1px solid var(--lg-line); }
+.ac-chip { height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--lg-border); background: transparent; color: var(--lg-dim); font: 500 12px Inter, sans-serif; cursor: pointer; }
+.ac-chip:hover { color: var(--lg-ink); }
+.ac-chip[aria-pressed='true'] { background: #1A1A1A; border-color: var(--lg-border-2); color: var(--lg-ink); }
+.ac-list { flex: 1; overflow: auto; padding: 0 24px; }
+.ac-pad { padding-top: 16px; }
+.ac-day { color: var(--lg-dim); font: 400 12px Inter, sans-serif; padding: 16px 0 6px; }
+.ac-row { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--lg-faint); }
+.ac-row:focus-visible { outline-offset: 0; }
+.ac-row .lg-dim { margin-top: 3px; }
+.ac-text { line-height: 1.45; overflow-wrap: anywhere; }
+.ac-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; background: var(--lg-ink); }
+.ac-dot-red { background: var(--lg-red); }
+.ac-dot-yellow { background: var(--lg-yellow); }
+.ac-dot-old { background: var(--lg-decor); }
+.ac-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 24px; border-top: 1px solid var(--lg-line); }
+.ac-toasts { position: fixed; right: 16px; bottom: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; width: min(400px, calc(100vw - 32px)); pointer-events: none; }
+.ac-toast { pointer-events: auto; padding: 0 16px; background: var(--lg-panel); border: 1px solid var(--lg-border); border-radius: 14px; box-shadow: 0 20px 50px rgb(0 0 0 / .5); color: var(--lg-ink); font-size: 13px; }
+.ac-toast .ac-row { border-bottom: 0; }
+@media (max-width: 720px) { .ac-toasts { bottom: calc(76px + env(safe-area-inset-bottom)); } }

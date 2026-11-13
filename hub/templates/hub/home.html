@@ -1,0 +1,29 @@
+{% extends 'hub/base.html' %}
+{% load humanize %}
+{% block body %}
+<header>
+  <h1>Lifehub</h1>
+  <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Log out</button></form>
+</header>
+<main>
+  {% for title, groups in sections %}
+  <section>
+    {% for source, items in groups %}
+    <h2>{{ source }}</h2>
+    <ul>
+      {% for item in items %}
+      <li{% if item.unread %} class="unread"{% endif %}>
+        <a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a>
+        <div class="meta">{% if item.sender %}{{ item.sender }} · {% endif %}{{ item.published|naturaltime }}</div>
+        {% if item.snippet %}<div class="snippet">{{ item.snippet }}</div>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% empty %}
+    <h2>{{ title }}</h2>
+    <p class="empty">Nothing yet.</p>
+    {% endfor %}
+  </section>
+  {% endfor %}
+</main>
+{% endblock %}

@@ -1,0 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+lifehub.toml
+db.sqlite3
+fetch.log
+staticfiles/
+frontend/dist/
+frontend/node_modules/
+var/
+db.sqlite3-*

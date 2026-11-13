@@ -1,0 +1,531 @@
+{
+  "notes": "Single-key shortcuts are ignored while typing in a field. 'G x' means press G, then x within ~1s. ⌘ = Ctrl on Windows/Linux.",
+  "global": [
+    {
+      "keys": [
+        "?"
+      ],
+      "action": "toggleHotkeysPanel",
+      "label": "show / hide this list"
+    },
+    {
+      "keys": [
+        "Meta+K"
+      ],
+      "alt": [
+        "/"
+      ],
+      "action": "openCommand",
+      "label": "ask LifeHub"
+    },
+    {
+      "keys": [
+        "G",
+        "D"
+      ],
+      "action": "goto:/",
+      "label": "go to dashboard"
+    },
+    {
+      "keys": [
+        "G",
+        "I"
+      ],
+      "action": "goto:/inbox",
+      "label": "go to inbox"
+    },
+    {
+      "keys": [
+        "G",
+        "C"
+      ],
+      "action": "goto:/cleanup",
+      "label": "go to sender cleanup"
+    },
+    {
+      "keys": [
+        "G",
+        "S"
+      ],
+      "action": "goto:/settings",
+      "label": "go to control panel"
+    },
+    {
+      "keys": [
+        "G",
+        "L"
+      ],
+      "action": "goto:/layout",
+      "label": "go to layout"
+    },
+    {
+      "keys": [
+        "B"
+      ],
+      "action": "toggleActivityTray",
+      "label": "open the activity log (bell)"
+    },
+    {
+      "keys": [
+        "Escape"
+      ],
+      "action": "closeOrBack",
+      "label": "close, or go back"
+    },
+    {
+      "keys": [
+        "G",
+        "R"
+      ],
+      "action": "goto:/resources",
+      "label": "go to resources (AI daily)"
+    }
+  ],
+  "screens": {
+    "dashboard": [
+      {
+        "keys": [
+          "1"
+        ],
+        "action": "focusColumn:act",
+        "label": "jump to Act"
+      },
+      {
+        "keys": [
+          "2"
+        ],
+        "action": "focusColumn:inbox",
+        "label": "jump to Inbox"
+      },
+      {
+        "keys": [
+          "3"
+        ],
+        "action": "focusColumn:read",
+        "label": "jump to Read"
+      },
+      {
+        "keys": [
+          "J"
+        ],
+        "action": "next",
+        "label": "next item"
+      },
+      {
+        "keys": [
+          "K"
+        ],
+        "action": "prev",
+        "label": "previous item"
+      },
+      {
+        "keys": [
+          "Enter"
+        ],
+        "action": "open",
+        "label": "open item"
+      },
+      {
+        "keys": [
+          "A"
+        ],
+        "action": "approve",
+        "label": "approve (stamp)"
+      },
+      {
+        "keys": [
+          "N"
+        ],
+        "action": "decline",
+        "label": "nope"
+      },
+      {
+        "keys": [
+          "E"
+        ],
+        "action": "editApproval",
+        "label": "edit approval or task"
+      },
+      {
+        "keys": [
+          "X"
+        ],
+        "action": "toggleTask",
+        "label": "tick task done"
+      },
+      {
+        "keys": [
+          "Z"
+        ],
+        "action": "snoozeTask",
+        "label": "snooze task to tomorrow"
+      },
+      {
+        "keys": [
+          "F"
+        ],
+        "action": "cycleAccount",
+        "label": "cycle all / work / personal"
+      },
+      {
+        "keys": [
+          "O"
+        ],
+        "action": "toggleGroup",
+        "label": "expand or collapse group"
+      }
+    ],
+    "inbox": [
+      {
+        "keys": [
+          "J"
+        ],
+        "action": "next",
+        "label": "next email"
+      },
+      {
+        "keys": [
+          "K"
+        ],
+        "action": "prev",
+        "label": "previous email"
+      },
+      {
+        "keys": [
+          "Enter"
+        ],
+        "action": "open",
+        "label": "open in reading pane"
+      },
+      {
+        "keys": [
+          "R"
+        ],
+        "action": "draftReply",
+        "label": "draft a reply"
+      },
+      {
+        "keys": [
+          "T"
+        ],
+        "action": "makeTask",
+        "label": "make it a task"
+      },
+      {
+        "keys": [
+          "M"
+        ],
+        "action": "moveTo",
+        "label": "move to…"
+      },
+      {
+        "keys": [
+          "Y"
+        ],
+        "action": "archive",
+        "label": "archive"
+      },
+      {
+        "keys": [
+          "F"
+        ],
+        "action": "cycleAccount",
+        "label": "cycle all / work / personal"
+      },
+      {
+        "keys": [
+          "["
+        ],
+        "action": "prevGroup",
+        "label": "previous group"
+      },
+      {
+        "keys": [
+          "]"
+        ],
+        "action": "nextGroup",
+        "label": "next group"
+      }
+    ],
+    "cleanup": [
+      {
+        "keys": [
+          "J"
+        ],
+        "action": "next",
+        "label": "next sender"
+      },
+      {
+        "keys": [
+          "K"
+        ],
+        "action": "prev",
+        "label": "previous sender"
+      },
+      {
+        "keys": [
+          "U"
+        ],
+        "action": "unsubscribeAndDelete",
+        "label": "unsubscribe + delete (queues approval)"
+      },
+      {
+        "keys": [
+          "P"
+        ],
+        "action": "keep",
+        "label": "keep"
+      },
+      {
+        "keys": [
+          "Y"
+        ],
+        "action": "deleteAll",
+        "label": "delete all from sender (queues approval)"
+      },
+      {
+        "keys": [
+          "M"
+        ],
+        "action": "mute",
+        "label": "mute"
+      },
+      {
+        "keys": [
+          "Shift+U"
+        ],
+        "action": "queueAllSuggested",
+        "label": "queue all suggested for approval"
+      },
+      {
+        "keys": [
+          "["
+        ],
+        "action": "prevTab",
+        "label": "previous tab"
+      },
+      {
+        "keys": [
+          "]"
+        ],
+        "action": "nextTab",
+        "label": "next tab"
+      }
+    ],
+    "approvalEdit": [
+      {
+        "keys": [
+          "Meta+Enter"
+        ],
+        "action": "approveAndSend",
+        "label": "approve & send"
+      },
+      {
+        "keys": [
+          "Meta+S"
+        ],
+        "action": "saveDraft",
+        "label": "save draft"
+      },
+      {
+        "keys": [
+          "Meta+Backspace"
+        ],
+        "action": "discard",
+        "label": "discard"
+      },
+      {
+        "keys": [
+          "Alt+1"
+        ],
+        "action": "rewrite:shorter",
+        "label": "rewrite shorter"
+      },
+      {
+        "keys": [
+          "Alt+2"
+        ],
+        "action": "rewrite:warmer",
+        "label": "rewrite warmer"
+      },
+      {
+        "keys": [
+          "Alt+3"
+        ],
+        "action": "rewrite:formal",
+        "label": "rewrite more formal"
+      },
+      {
+        "keys": [
+          "Alt+4"
+        ],
+        "action": "rewrite:newTime",
+        "label": "suggest another time"
+      },
+      {
+        "keys": [
+          "Alt+5"
+        ],
+        "action": "rewrite:polish",
+        "label": "polish with Gemini (sends just the draft)"
+      },
+      {
+        "keys": [
+          "Alt+F"
+        ],
+        "action": "switchFromAccount",
+        "label": "switch From account"
+      }
+    ],
+    "command": [
+      {
+        "keys": [
+          "Enter"
+        ],
+        "action": "ask",
+        "label": "ask"
+      },
+      {
+        "keys": [
+          "Meta+Enter"
+        ],
+        "action": "askGemini",
+        "label": "ask Gemini instead"
+      },
+      {
+        "keys": [
+          "ArrowUp"
+        ],
+        "action": "previousQuestion",
+        "label": "previous question"
+      },
+      {
+        "keys": [
+          "A"
+        ],
+        "action": "approveCard",
+        "label": "approve the drafted card"
+      },
+      {
+        "keys": [
+          "N"
+        ],
+        "action": "declineCard",
+        "label": "nope the drafted card"
+      }
+    ],
+    "settings": [
+      {
+        "keys": [
+          "J"
+        ],
+        "action": "next",
+        "label": "next setting"
+      },
+      {
+        "keys": [
+          "K"
+        ],
+        "action": "prev",
+        "label": "previous setting"
+      },
+      {
+        "keys": [
+          "Space"
+        ],
+        "action": "toggle",
+        "label": "toggle or open dropdown"
+      },
+      {
+        "keys": [
+          "ArrowLeft",
+          "ArrowRight"
+        ],
+        "action": "changeOption",
+        "label": "change sky / option"
+      }
+    ],
+    "layout": [
+      {
+        "keys": [
+          "J"
+        ],
+        "action": "next",
+        "label": "select next window"
+      },
+      {
+        "keys": [
+          "K"
+        ],
+        "action": "prev",
+        "label": "select previous window"
+      },
+      {
+        "keys": [
+          "Shift+ArrowUp"
+        ],
+        "action": "moveUp",
+        "label": "move window up"
+      },
+      {
+        "keys": [
+          "Shift+ArrowDown"
+        ],
+        "action": "moveDown",
+        "label": "move window down"
+      },
+      {
+        "keys": [
+          "H"
+        ],
+        "action": "toggleHidden",
+        "label": "hide / show window"
+      },
+      {
+        "keys": [
+          "R"
+        ],
+        "action": "reset",
+        "label": "reset layout"
+      },
+      {
+        "keys": [
+          "Enter"
+        ],
+        "action": "done",
+        "label": "done"
+      }
+    ],
+    "activityTray": [
+      {
+        "keys": [
+          "J"
+        ],
+        "action": "next",
+        "label": "next entry"
+      },
+      {
+        "keys": [
+          "K"
+        ],
+        "action": "prev",
+        "label": "previous entry"
+      },
+      {
+        "keys": [
+          "Shift+R"
+        ],
+        "action": "markAllRead",
+        "label": "mark all read"
+      },
+      {
+        "keys": [
+          "B"
+        ],
+        "action": "toggleActivityTray",
+        "label": "close"
+      }
+    ],
+    "resources": []
+  }
+}

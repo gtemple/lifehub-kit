@@ -1,0 +1,30 @@
+.lg-dialog.ask { background: #0E0E0E; border-color: #2A2A2A; border-radius: 22px; overflow: auto; display: flex; flex-direction: column; }
+.ask-bar { display: flex; align-items: center; gap: 12px; padding: 18px 22px; border-bottom: 1px solid var(--lg-line); color: var(--lg-dim); }
+.ask-bar input { flex: 1; min-width: 0; background: transparent; border: 0; outline: none; color: var(--lg-ink); font: 400 20px var(--lg-head); }
+.ask-bar input::placeholder { color: var(--lg-decor); }
+.ask-esc { min-height: 32px; padding: 0 4px; font-size: 12px; color: var(--lg-decor); }
+
+.ask-body { padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; }
+.ask-steps { display: flex; flex-direction: column; gap: 6px; color: var(--lg-dim); font-size: 13px; }
+.ask-steps > span { display: flex; align-items: center; gap: 8px; }
+.ask-doing { color: var(--lg-soft); }
+.ask-answer { font-size: 15px; line-height: 1.6; display: flex; flex-direction: column; gap: 10px; }
+.ask-answer ol, .ask-answer ul { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 4px; }
+.ask-pills { gap: 8px; }
+.ask-card { padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+
+.ask-try { padding: 14px 22px; border-top: 1px solid var(--lg-line); display: flex; flex-direction: column; gap: 10px; }
+.ask-chips { gap: 6px; }
+.ask-chip { min-height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--lg-border); background: var(--lg-faint); color: #D9D9D9; font: 500 12px Inter, sans-serif; cursor: pointer; }
+.ask-chip:hover { border-color: var(--lg-border-2); color: var(--lg-ink); }
+
+.ask-foot { padding: 10px 22px; border-top: 1px solid var(--lg-line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; color: var(--lg-decor); }
+.ask-model { gap: 8px; }
+.ask-model .lg-dot { background: var(--lg-ink); }
+
+.ask-matches { display: flex; flex-direction: column; gap: 2px; padding: 12px 12px 4px; border-top: 1px solid var(--lg-line); max-height: 320px; overflow-y: auto; }
+.ask-matches > span { padding: 0 8px 4px; }
+.ask-match { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 10px; align-items: center; min-height: 48px; padding: 6px 8px; border-radius: 10px; color: var(--lg-ink); text-decoration: none; font-size: 13px; }
+a.ask-match:hover, a.ask-match:focus-visible { background: #161616; }
+.ask-kind { color: var(--lg-dim); font-family: 'JetBrains Mono', ui-monospace, monospace; }
+.ask-match-text { min-width: 0; gap: 2px; line-height: 1.35; }

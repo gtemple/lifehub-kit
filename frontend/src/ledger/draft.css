@@ -1,0 +1,28 @@
+.de-top { gap: 4px 16px; }
+.de-top > a, .de-top > h1 { white-space: nowrap; }
+.de-back { font-size: 14px; min-height: 32px; display: inline-flex; align-items: center; }
+.de-crumb { font-size: 14px; }
+.de-status { margin-left: auto; text-align: right; }
+
+.lg-main.de { padding-top: 32px; flex-direction: row; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+.de-orig { flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.de-card { border: 1px solid var(--lg-line); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.de-h2 { font: 500 22px/1.2 var(--lg-head); overflow-wrap: anywhere; }
+.de-orig-body { color: var(--lg-soft); line-height: 1.7; white-space: pre-line; overflow-wrap: anywhere; }
+.de-why { line-height: 1.5; }
+
+.de-reply { flex: 2 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
+.de-fields { display: grid; grid-template-columns: 80px minmax(0, 1fr); border-top: 1px solid var(--lg-line); }
+.de-fields > label { color: var(--lg-dim); padding: 14px 0; border-bottom: 1px solid var(--lg-line); }
+.de-fields > input, .de-fields > select { min-width: 0; background: transparent; border: 0; border-bottom: 1px solid var(--lg-line); color: var(--lg-ink); font: 400 14px Inter, sans-serif; padding: 14px 0; }
+.de-fields > input:focus, .de-fields > select:focus { outline: none; border-bottom-color: #4D4D4D; }
+.de-fields option { background: var(--lg-panel); }
+.de-body { background: var(--lg-raised); border: 1px solid var(--lg-border); border-radius: 16px; padding: 18px 20px; color: var(--lg-ink); font: 400 16px/1.7 Inter, sans-serif; resize: vertical; min-height: 260px; }
+.de-body:focus { outline: none; border-color: #4D4D4D; }
+.de-styles { gap: 8px; }
+.de-styles > span { margin-right: 4px; }
+.de-style { height: 32px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--lg-border); background: var(--lg-panel); color: #D9D9D9; font: 500 12px Inter, sans-serif; cursor: pointer; }
+.de-style:hover { border-color: var(--lg-border-2); color: var(--lg-ink); }
+.de-style:disabled { opacity: 0.45; cursor: default; }
+.de-actions { padding-top: 18px; border-top: 1px solid var(--lg-line); }
+.de-note { margin-left: auto; }

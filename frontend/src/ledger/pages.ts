@@ -1,0 +1,7 @@
+export { Dashboard } from './Dashboard'
+export { InboxPage } from './InboxPage'
+export { CleanupPage } from './CleanupPage'
+export { SettingsPage } from './SettingsPage'
+export { DraftEditor } from './DraftEditor'
+export { ResourcesPage } from './ResourcesPage'
+export { MorePage } from './MorePage'

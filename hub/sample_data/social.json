@@ -1,0 +1,39 @@
+{
+  "tile": "social",
+  "items": [
+    {
+      "id": "s1",
+      "network": "LinkedIn",
+      "who": "Alex C.",
+      "text": "Commented on your launch post",
+      "at": "2026-10-05T08:30:00-04:00"
+    },
+    {
+      "id": "s2",
+      "network": "X",
+      "who": "3 mentions",
+      "text": "Replies to your agent-tooling thread; one asks a question",
+      "at": "2026-10-05T07:50:00-04:00"
+    },
+    {
+      "id": "s3",
+      "network": "Instagram",
+      "who": "Priya",
+      "text": "Sent you a photo from Saturday",
+      "at": "2026-10-04T21:00:00-04:00"
+    },
+    {
+      "id": "s4",
+      "network": "Reddit",
+      "who": "r/LocalLLaMA",
+      "text": "Top post this week matches your saved topics",
+      "at": "2026-10-04T19:00:00-04:00"
+    }
+  ],
+  "updatedAt": "2026-10-05T11:42:00-04:00",
+  "status": "ok",
+  "data": {
+    "kept": 4,
+    "scanned": 140
+  }
+}

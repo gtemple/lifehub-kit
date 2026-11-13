@@ -1,0 +1,63 @@
+.ib-page { height: 100vh; display: flex; flex-direction: column; }
+.lg-main.ib { flex: 1; min-height: 0; width: 100%; padding-top: 0; padding-bottom: 0; flex-direction: row; gap: 0; align-items: stretch; }
+
+.ib-folders { flex: 0 0 220px; padding: 24px 20px 24px 0; border-right: 1px solid var(--lg-line); display: flex; flex-direction: column; gap: 18px; overflow: auto; }
+.ib-accts { display: flex; }
+.ib-accts > button { flex: 1; justify-content: center; }
+.ib-folder-list { display: flex; flex-direction: column; gap: 2px; }
+.ib-folder { display: flex; justify-content: space-between; align-items: center; min-height: 38px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: var(--lg-dim); font-weight: 500; text-align: left; cursor: pointer; }
+.ib-folder > span { font-size: 12px; color: var(--lg-dim); }
+.ib-folder > span.lg-yellow { color: var(--lg-yellow); }
+.ib-folder:hover { color: var(--lg-ink); }
+.ib-folder[aria-pressed='true'] { background: #1A1A1A; color: var(--lg-ink); }
+.ib-cleanup { margin-top: auto; }
+
+.ib-list { flex: 0 1 460px; min-width: 0; border-right: 1px solid var(--lg-line); overflow: auto; }
+.ib-list-head { display: flex; justify-content: space-between; align-items: baseline; padding: 24px 20px 12px; border-bottom: 1px solid var(--lg-line); }
+.ib-title { font: 500 22px var(--lg-head); letter-spacing: -0.01em; }
+.ib-pad { padding: 14px 20px; }
+.ib-row { width: 100%; display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; gap: 12px; padding: 14px 20px; border: 0; border-bottom: 1px solid var(--lg-faint); background: transparent; text-align: left; align-items: start; cursor: pointer; }
+.ib-row:hover, .ib-row[aria-current='true'] { background: var(--lg-panel); }
+.ib-row:focus-visible { outline-offset: -2px; }
+.ib-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; background: #333; }
+.ib-unread .ib-dot { background: var(--lg-ink); }
+.ib-row-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ib-unread .ib-from { font-weight: 600; }
+.ib-subject { color: #D9D9D9; }
+
+.ib-pane { flex: 1 1 420px; min-width: 0; padding: 24px 0 24px 32px; display: flex; flex-direction: column; gap: 20px; overflow: auto; }
+.ib-pane:focus { outline: none; }
+.ib-actions { gap: 8px; }
+.ib-actions .lg-btn { height: 36px; }
+.ib-move { appearance: none; padding-right: 14px; background: transparent; }
+.ib-move option { background: var(--lg-panel); color: var(--lg-ink); }
+.ib-head { gap: 6px; }
+.ib-h2 { font: 500 30px/1.15 var(--lg-head); letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.ib-oneline { padding: 14px 16px; border-radius: 14px; background: var(--lg-panel); border: 1px solid var(--lg-line); line-height: 1.5; }
+.ib-body { color: #D9D9D9; line-height: 1.7; max-width: 640px; white-space: pre-line; overflow-wrap: anywhere; }
+.ib-body p + p { margin-top: 12px; }
+.ib-foot { margin-top: auto; display: flex; flex-direction: column; gap: 14px; }
+.ib-stamp { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--lg-yellow-bg); border: 1px solid var(--lg-yellow-border); }
+
+/* narrow: folders as a strip, then the list, then the reading pane, all in one scroll */
+@media (max-width: 900px) {
+  .ib-page { height: auto; }
+  .lg-main.ib { flex-direction: column; }
+  .ib-folders { flex: none; padding: 16px 0; border-right: 0; border-bottom: 1px solid var(--lg-line); gap: 12px; }
+  .ib-folder-list { flex-direction: row; flex-wrap: wrap; }
+  .ib-folder { gap: 8px; min-height: 34px; }
+  .ib-cleanup { margin-top: 0; }
+  .ib-list { flex: none; max-height: 50vh; border-right: 0; border-bottom: 1px solid var(--lg-line); }
+  .ib-list-head, .ib-row { padding-left: 0; padding-right: 0; }
+  .ib-pane { flex: none; padding: 24px 0 32px; overflow: visible; }
+}
+
+.ib-back { display: none; }
+@media (max-width: 720px) {
+  .ib-reading .ib-folders, .ib-reading .ib-list, .ib:not(.ib-reading) .ib-pane { display: none; }
+  .ib-list { max-height: none; border-bottom: 0; }
+  .ib-pane { padding-top: 0; }
+  .ib-back { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; }
+  .ib-folder-list { flex-wrap: nowrap; overflow-x: auto; margin: 0 -16px; padding: 0 16px; scrollbar-width: none; }
+  .ib-folder { flex: none; }
+}

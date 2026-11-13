@@ -1,0 +1,12 @@
+[project]
+name = "lifehub"
+version = "0.1.0"
+description = "Personal dashboard: email, news, social"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=6.1.1",
+    "gunicorn>=26.2.0",
+    "icalendar>=7.3.0",
+    "recurring-ical-events>=3.8.2",
+    "whitenoise>=6.12.0",
+]
