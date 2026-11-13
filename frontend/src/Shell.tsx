@@ -158,7 +158,7 @@ export function Shell({ screen, handlers = {}, onAskClosed, children }: { screen
 const SCREEN_LABEL: Record<Screen, string> = {
   dashboard: 'on the dashboard', inbox: 'in the inbox', cleanup: 'in cleanup', approvalEdit: 'editing a draft',
   command: 'in ask.exe', settings: 'in the control panel', layout: 'in layout', activityTray: 'in the activity log',
-  resources: 'on Resources',
+  resources: 'on Resources', server: 'on the Server page',
 }
 
 function Keys({ e }: { e: Entry }) {

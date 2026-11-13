@@ -26,7 +26,7 @@ from django.shortcuts import render
 import threading
 import time
 
-from hub import agenda, agent, brief, cleanup, connections, drafts, events, health, learn, mail, news, prices, receipts, triage, waiting, weekly
+from hub import agenda, agent, brief, cleanup, connections, drafts, events, health, learn, mail, news, prices, receipts, server, triage, waiting, weekly
 from hub.models import PERMISSIONS, DayBrief, NewsBrief, Sender, Setting, permission
 from hub.models import Activity, Approval, AuditRow, Item, LearnCard, Note, SentMail, SourceStatus, Task, Watch
 
@@ -211,11 +211,20 @@ def prices_tile():
 
 
 def nav_tile():
-    """The ledger top bar: replies waiting beside Inbox."""
+    """The ledger top bar: replies waiting beside Inbox, and a red dot beside Server when a container crashed."""
     # every open tab asks each minute; one count a minute is plenty
     replies = cache.get_or_set('nav_replies', lambda: sum(m.group == 'needs_reply' for m in inbox_mail()), 60)
     # private: Ollama or allowed Gemini is there to sort, draft and brief; checked at most once a minute
-    return {'replies': replies, 'private': cache.get_or_set('nav_private', health.private_up, 60)}
+    on = bool(settings.LIFEHUB.get('server'))
+    return {'replies': replies, 'private': cache.get_or_set('nav_private', health.private_up, 60),
+            'server': on, 'down': on and bool(cache.get_or_set('nav_down', crashed, 60))}
+
+
+def crashed():
+    try:
+        return server.crashed()
+    except Exception:
+        return []  # docker away: the Server page itself says so
 
 
 LIVE['nav'] = nav_tile
@@ -715,3 +724,44 @@ def api_items(request):
     return JsonResponse({'items': list(items.values('kind', 'source', 'title', 'sender', 'url', 'snippet', 'unread', 'published', 'group', 'answered')[:200])})
 
 
+
+
+def server_on(view):
+    def wrapped(request, *a, **kw):
+        if not settings.LIFEHUB.get('server'):
+            raise Http404('the Server page is off: server = true in lifehub.toml turns it on')
+        return view(request, *a, **kw)
+    return wrapped
+
+
+@login_required
+@server_on
+def server_state(request):
+    try:
+        return JsonResponse(server.state())
+    except Exception as e:  # no docker CLI, or no socket
+        return JsonResponse({'error': f"can't reach Docker: {e}"[:300]}, status=503)
+
+
+@require_POST
+@login_required
+@server_on
+def server_act(request):
+    body = json.loads(request.body or '{}')
+    try:
+        return JsonResponse({'done': server.act(str(body.get('kind', '')), str(body.get('name', '')), str(body.get('action', '')), body.get('value'))})
+    except LookupError as e:
+        return JsonResponse({'error': str(e)}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)[:300]}, status=500)
+
+
+@login_required
+@server_on
+def server_logs(request):
+    try:
+        return JsonResponse({'lines': server.logs(request.GET.get('kind', ''), request.GET.get('name', ''), request.GET.get('lines') or server.LOG_LINES)})
+    except LookupError as e:
+        return JsonResponse({'error': str(e)}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)[:300]}, status=500)

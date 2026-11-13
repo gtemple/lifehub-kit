@@ -25,6 +25,7 @@ async function ledger(): Promise<ReactNode> {
     : path === '/cleanup' ? <L.CleanupPage />
     : path === '/settings' || path === '/layout' ? <L.SettingsPage />
     : path === '/resources' ? <L.ResourcesPage />
+    : path === '/server' ? <L.ServerPage />
     : path === '/more' ? <L.MorePage />
     : <L.Dashboard />
 }

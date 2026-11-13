@@ -82,7 +82,7 @@ GEMINI = 'https://generativelanguage.googleapis.com/v1beta/models/{model}:genera
 # pinned, and the fallback is a different tier so one overloaded tier doesn't take out both
 GEMINI_MODELS = ['gemini-3.1-flash-lite', 'gemini-3-flash-preview']  # gemini-2.5-flash answers 404 since Nov 2026
 GEMINI_TIMEOUT = 40  # per model; a hung model used to hold every caller for 90 s before the fallback ran
-USAGE_LOG = settings.BASE_DIR / 'var' / 'gemini_usage.jsonl'
+USAGE_LOG = settings.DATA_DIR / 'var' / 'gemini_usage.jsonl'
 
 
 def record_usage(data, search=False):

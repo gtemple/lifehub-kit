@@ -1,0 +1,38 @@
+# docker compose up -d                    Lifehub, using Ollama on the host or Gemini
+# docker compose --profile ollama up -d   ... plus Ollama in a container (ollama_url = "http://ollama:11434")
+# The Server page also needs compose.server.yml: see the comments there.
+services:
+  web:
+    build: .
+    image: lifehub
+    command: sh -c "python manage.py migrate --noinput && python manage.py collectstatic --noinput -v0 && gunicorn config.wsgi -b 0.0.0.0:8400 -w 2 --timeout 180"
+    ports: ["8400:8400"]
+    volumes:
+      - ./lifehub.toml:/app/lifehub.toml:ro
+      - ./data:/data
+    extra_hosts: ["host.docker.internal:host-gateway"]  # Ollama on the host: ollama_url = "http://host.docker.internal:11434"
+    restart: unless-stopped
+
+  fetch:
+    image: lifehub
+    command: python manage.py fetch --every 300
+    volumes:
+      - ./lifehub.toml:/app/lifehub.toml:ro
+      - ./data:/data
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    depends_on: [web]  # web runs the migrations
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:0.40.16
+    profiles: [ollama]
+    volumes: [ollama:/root/.ollama]
+    restart: unless-stopped
+    # NVIDIA GPU (needs the NVIDIA Container Toolkit on the host): uncomment
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices: [{ driver: nvidia, count: all, capabilities: [gpu] }]
+
+volumes:
+  ollama:

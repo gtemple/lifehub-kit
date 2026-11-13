@@ -79,6 +79,14 @@
       ],
       "action": "goto:/resources",
       "label": "go to resources (AI daily)"
+    },
+    {
+      "keys": [
+        "G",
+        "V"
+      ],
+      "action": "goto:/server",
+      "label": "go to server"
     }
   ],
   "screens": {
@@ -526,6 +534,7 @@
         "label": "close"
       }
     ],
-    "resources": []
+    "resources": [],
+    "server": []
   }
 }

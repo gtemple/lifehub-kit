@@ -14,7 +14,8 @@ If `lifehub.toml` already exists, read it, say what's configured, and ask what t
 Ask in small batches (AskUserQuestion when it fits), wait for answers:
 
 1. **Who**: first name and full name (drafted email replies are signed with it). Pronouns aren't needed; the prompts use "them".
-2. **Where it runs**: this machine only, or an always-on box (mini PC, Raspberry Pi 5, old laptop)? Linux, macOS or Windows (WSL)? The fetch job needs to run every few minutes, so an always-on machine is best.
+2. **Where and how it runs**: this machine only, or an always-on box (mini PC, Raspberry Pi 5, old laptop)? Linux, macOS or Windows (WSL)? The fetch job needs to run every few minutes, so an always-on machine is best.
+   Then: **Docker** (recommended if they have it or are happy to install it: one command to run, easy to move) or **native** (uv + pm2/systemd)?
 3. **Location**: city (for weather and the time zone). Look up lat/lon and the IANA time zone yourself; confirm them.
 4. **Email**: which Gmail / Google Workspace accounts (a short name each, like Personal or Work). Other IMAP providers work if they give host + app password; say so if they use one.
 5. **Calendar**: Google calendars to show on Today (optional).
@@ -22,7 +23,11 @@ Ask in small batches (AskUserQuestion when it fits), wait for answers:
 7. **AI models**: Lifehub sorts mail, drafts replies and writes a day brief with a model.
    - Ollama (local, free, private; needs ~8 GB RAM for `qwen3.5:4b`, more for bigger models). Recommend this for private data.
    - Gemini API key (optional; cheap, used for news and the AI daily card, and for private data only if they turn it on in Settings).
-   They need at least one.
+   They need at least one. With Docker, ask whether Ollama should run in a container (the `ollama` profile) or on the host (already installed, or on a Mac where a container can't use the GPU). If in a container: do they have an NVIDIA GPU? Then the GPU block in `compose.yml` and the NVIDIA Container Toolkit; otherwise it runs on the CPU, which is fine for a 4B model but slow for bigger ones.
+8. **Server page** (optional): a page to see and control the containers and compose stacks on this machine (start/stop, logs, updates, memory limits), plus pm2 apps and Ollama, with a red dot when a container crashes. Needs Docker on the machine.
+   - Ask if they have **other projects already running in Docker Compose**. Those show up on their own once they've been started (`docker compose up`) at least once; note where they live (`PROJECTS_DIR`).
+   - Ask if they have **projects not in Docker yet** that they'd like containerized. Offer to write a `Dockerfile` and `compose.yml` for each, one project at a time, now or later in that project's own folder. Don't do this inside the Lifehub repo.
+   - If Lifehub itself runs in Docker, the page needs the Docker socket mounted, which gives Lifehub root-level access to the machine. Say so plainly; it's fine for a LAN-only app behind a login, and they can skip the page.
 
 Then summarize the plan back in a short list and get a yes before writing anything.
 
@@ -33,6 +38,25 @@ Then summarize the plan back in a short list and get a yes before writing anythi
 3. `lifehub.toml` is gitignored; never commit it.
 
 ## Phase 3: install
+
+### Docker
+
+Prerequisite: Docker with the compose plugin (`docker compose version`). On macOS/Windows, Docker Desktop.
+
+1. In `lifehub.toml`, `ollama_url` is `http://ollama:11434` (ollama profile) or `http://host.docker.internal:11434` (host Ollama). On Linux, host Ollama must listen beyond localhost: `OLLAMA_HOST=0.0.0.0` in its systemd unit.
+2. Server page: `server = true` in `lifehub.toml`, and a `.env` beside `compose.yml`:
+   ```
+   COMPOSE_FILE=compose.yml:compose.server.yml
+   PROJECTS_DIR=/absolute/path/to/their/projects
+   ```
+3. Ollama in a container: add `COMPOSE_PROFILES=ollama` to `.env` (so plain `docker compose up` includes it).
+4. `docker compose up -d --build`, then `docker compose exec web python manage.py createsuperuser` (they type their own password: tell them to run it with `! ` in Claude Code).
+5. Ollama in a container: `docker compose exec ollama ollama pull <model>`.
+6. Check `docker compose ps` and `docker compose logs web fetch`.
+
+It restarts on its own (`restart: unless-stopped`); skip Phase 5's pm2/systemd. Updating later: `git pull && docker compose up -d --build`.
+
+### Native
 
 Check prerequisites first and walk them through any that are missing: `uv` (https://docs.astral.sh/uv/), Node 20+, git.
 
@@ -57,7 +81,9 @@ For each, walk through getting the credential, write it, then verify before the 
 
 Sending email stays off until they switch it on in Settings; mention this. Drafts always wait for their approval ("stamp").
 
-## Phase 5: run it
+## Phase 5: run it (native only)
+
+Native installs that want the Server page: `server = true` in `lifehub.toml`, and the user running Lifehub must be in the `docker` group.
 
 1. Try it: `uv run manage.py runserver 0.0.0.0:8400` and open http://localhost:8400, log in with the superuser.
 2. Background fetch (mail, news, drafts, brief): `uv run manage.py fetch --every 300` must keep running.

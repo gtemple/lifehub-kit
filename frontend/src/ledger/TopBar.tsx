@@ -5,12 +5,13 @@ import { useShell } from '../Shell'
 import { Activity } from './Activity'
 import { NAV_ICONS } from './navIcons'
 
-export type Page = 'more' | 'dashboard' | 'inbox' | 'cleanup' | 'resources' | 'settings'
+export type Page = 'more' | 'dashboard' | 'inbox' | 'cleanup' | 'server' | 'resources' | 'settings'
 
 // group: a divider goes between groups; Settings sits alone at the foot of the rail
 const PAGES: [Page, string, string, string, number][] = [
   ['dashboard', '/', 'Home', 'G D', 0], ['inbox', '/inbox', 'Inbox', 'G I', 0], ['cleanup', '/cleanup', 'Cleanup', 'G C', 0],
   ['resources', '/resources', 'Resources', 'G R', 2],
+  ['server', '/server', 'Server', 'G V', 3],
   ['settings', '/settings', 'Settings', 'G S', 9],
 ]
 
@@ -38,7 +39,7 @@ export const MORE_PAGES = PAGES.filter(p => !TABS.includes(p[0]))
 
 export function TopBar({ page, tray, onUndone }: { page?: Page; tray: { open: boolean; setOpen: (v: boolean) => void }; onUndone?: () => void }) {
   const { openAsk } = useShell()
-  const navTile = useTile<never, { replies: number; private: boolean }>('nav', 60_000)
+  const navTile = useTile<never, { replies: number; private: boolean; server: boolean; down: boolean }>('nav', 60_000)
   const nav = navTile.res?.data
   const weather = useTile<never, { city: string; tempC: number }>('weather', 30 * 60_000).res?.data
   const now = useNow()
@@ -46,13 +47,14 @@ export function TopBar({ page, tray, onUndone }: { page?: Page; tray: { open: bo
     <>
     <nav className="lg-nav" aria-label="Lifehub">
       <a href="/" className="lg-brand" aria-label="Lifehub home"><img src={`${import.meta.env.BASE_URL}sun.svg`} alt="" width="36" height="36" /></a>
-      {PAGES.map(([id, href, label, keys, group], i) => (
+      {PAGES.filter(p => p[0] !== 'server' || nav?.server).map(([id, href, label, keys, group], i, shown) => (
         <Fragment key={id}>
-          {i > 0 && group !== 9 && group !== PAGES[i - 1][4] && <span className="lg-nav-rule" aria-hidden="true" />}
+          {i > 0 && group !== 9 && group !== shown[i - 1][4] && <span className="lg-nav-rule" aria-hidden="true" />}
           <a href={href} className={group === 9 ? 'lg-nav-foot' : undefined} aria-current={page === id ? 'page' : undefined} aria-keyshortcuts={keys} data-keys={keys}>
             <svg width="22" height="22" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d={NAV_ICONS[id][page === id ? 1 : 0]} /></svg>
             {label}
             {id === 'inbox' && !!nav?.replies && <span className="lg-badge" aria-label={`, ${nav.replies} need a reply`}>{nav.replies}</span>}
+            {id === 'server' && nav?.down && <span className="lg-alert" role="img" aria-label=", a container crashed" />}
           </a>
         </Fragment>
       ))}

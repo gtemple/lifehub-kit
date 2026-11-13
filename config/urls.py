@@ -7,7 +7,7 @@ from hub import views
 
 urlpatterns = [
     path('', views.app, name='home'),
-    re_path(r'^(?:inbox|cleanup|settings|layout|states|resources|more|approvals/\d+)/?$', views.app),
+    re_path(r'^(?:inbox|cleanup|settings|layout|states|server|resources|more|approvals/\d+)/?$', views.app),
     path('classic/', views.home),
     path('api/tiles/<slug:name>/', views.tile),
     path('api/items/', views.api_items),
@@ -24,6 +24,9 @@ urlpatterns = [
     path('api/tasks/<int:pk>/', views.task_save),
     path('api/waiting/<int:pk>/', views.waiting_dismiss),
     path('api/search/', views.search),
+    path('api/server/', views.server_state),
+    path('api/server/act/', views.server_act),
+    path('api/server/logs/', views.server_logs),
     path('api/prices/', views.watch_save),
     path('api/prices/find/', views.watch_find),
     path('api/prices/<int:pk>/', views.watch_save),

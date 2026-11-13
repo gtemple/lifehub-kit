@@ -5,6 +5,7 @@ secret_key = "generate with: python -c 'import secrets; print(secrets.token_urls
 api_token = "generate the same way"
 
 # local model for private data (mail, notes, calendar): https://ollama.com
+# in Docker: "http://ollama:11434" (the ollama profile) or "http://host.docker.internal:11434" (Ollama on the host)
 ollama_url = "http://localhost:11434"
 ollama_model = "qwen3.5:4b"
 
@@ -12,6 +13,9 @@ ollama_model = "qwen3.5:4b"
 # gemini_api_key = "..."
 
 time_zone = "America/Toronto"  # IANA name
+
+# the Server page: containers, compose stacks, pm2 apps and Ollama on this machine. Needs Docker; in Docker also compose.server.yml
+# server = true
 
 [weather]
 city = "Your City"

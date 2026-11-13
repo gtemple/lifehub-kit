@@ -1,0 +1,11 @@
+# Opt-in: lets the Server page see and control this machine's other containers and compose stacks.
+# Mounting the Docker socket gives Lifehub root-equivalent access to the host. It's LAN-only behind a login; keep it that way.
+# Turn on with `server = true` in lifehub.toml, and in .env:
+#   COMPOSE_FILE=compose.yml:compose.server.yml
+#   PROJECTS_DIR=/home/you/projects   # where your other compose projects live
+services:
+  web:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # same path inside as outside: compose labels name each project's files by their host path
+      - ${PROJECTS_DIR:?set PROJECTS_DIR in .env}:${PROJECTS_DIR}

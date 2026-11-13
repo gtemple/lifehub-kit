@@ -10,11 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import os
 import tomllib
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# the database and logs; in Docker a mounted volume, so they outlive the container
+DATA_DIR = Path(os.environ.get('LIFEHUB_DATA', BASE_DIR))
 
 
 # Quick-start development settings - unsuitable for production
@@ -104,7 +107,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DATA_DIR / 'db.sqlite3',
         # the web app, the fetch job and the coach worker all write; WAL lets readers carry on meanwhile.
         # IMMEDIATE: a transaction that reads then writes would otherwise fail at once ("database is locked")
         # when another process wrote in between, instead of waiting out the timeout

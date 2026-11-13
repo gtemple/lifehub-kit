@@ -1406,3 +1406,89 @@ class PolishTests(SimpleTestCase):
         private.assert_not_called()
 
 
+
+
+class ServerTests(TestCase):
+    def test_sizes(self):
+        from hub.server import size
+        self.assertEqual([size('42.5MiB'), size('1.5GiB'), size('512kB'), size('0B'), size('?')], [int(42.5 * 2**20), int(1.5 * 2**30), 512000, 0, 0])
+
+    def test_container_limit_writes_override_and_refuses_unknown(self):
+        import tempfile
+        from pathlib import Path
+        from unittest import mock
+        from hub import server
+        from hub.models import Activity, Setting
+        d = Path(tempfile.mkdtemp())
+        (d / 'compose.yml').write_text('services: {}\n')
+        Setting.objects.create(key=server.STACKS, value={'web': [str(d / 'compose.yml')]})
+        c = {'name': 'web-db-1', 'project': 'web', 'service': 'db', 'image': 'postgres:16', 'files': [str(d / 'compose.yml')]}
+        calls = []
+        with mock.patch.object(server, 'containers', return_value=[c]), mock.patch.object(server, 'sh', side_effect=lambda *a, **k: calls.append(a) or ''):
+            with self.assertRaises(LookupError):
+                server.act('container', 'nope', 'restart')
+            server.act('container', 'web-db-1', 'limit', 512 * 2**20)
+            over = d / 'compose.override.yml'
+            self.assertIn('  db:\n    mem_limit: 536870912\n', over.read_text())
+            self.assertIn(('docker', 'update', '--memory', '536870912', '--memory-swap', '536870912', 'web-db-1'), calls)
+            # lifting it rewrites the override without it and recreates the container
+            server.act('container', 'web-db-1', 'limit', None)
+            self.assertFalse(over.exists())
+            self.assertEqual(calls[-1][-5:], ('up', '-d', '--no-deps', '--force-recreate', 'db'))
+            # someone's own override file is never overwritten
+            over.write_text('services: {db: {cpus: 1}}\n')
+            with self.assertRaises(RuntimeError):
+                server.act('container', 'web-db-1', 'limit', 2**30)
+        self.assertEqual(Activity.objects.filter(via='Server').count(), 2)
+
+    def test_image_refs_and_registry_challenge(self):
+        from hub.server import challenge, image_ref
+        self.assertEqual(image_ref('postgres:16'), ('registry-1.docker.io', 'library/postgres', '16'))
+        self.assertEqual(image_ref('cloudflare/cloudflared'), ('registry-1.docker.io', 'cloudflare/cloudflared', 'latest'))
+        self.assertEqual(image_ref('ghcr.io/owner/app:1.2'), ('ghcr.io', 'owner/app', '1.2'))
+        self.assertEqual(image_ref('localhost:5000/app'), ('localhost:5000', 'app', 'latest'))
+        self.assertEqual(image_ref('docker.io/library/redis:7'), ('registry-1.docker.io', 'library/redis', '7'))
+        self.assertIsNone(image_ref('postgres@sha256:abc'))
+        self.assertEqual(challenge('Bearer realm="https://ghcr.io/token",service="ghcr.io",scope="repository:owner/app:pull"'),
+                         'https://ghcr.io/token?service=ghcr.io&scope=repository:owner/app:pull')
+        self.assertIsNone(challenge('Basic realm="x"'))
+
+    def test_builder_is_the_service_that_builds_the_image(self):
+        from unittest import mock
+        from hub import server
+        svcs = {'backend': (True, 'web-backend'), 'worker': (False, 'web-backend'), 'db': (False, 'postgres:16')}
+        with mock.patch.object(server, 'services', return_value=svcs):
+            base = {'project': 'web', 'files': ['/x/compose.yml']}
+            self.assertEqual(server.builder({**base, 'service': 'backend', 'image': 'web-backend'}), 'backend')
+            self.assertEqual(server.builder({**base, 'service': 'worker', 'image': 'web-backend'}), 'backend')
+            self.assertIsNone(server.builder({**base, 'service': 'db', 'image': 'postgres:16'}))
+        self.assertIsNone(server.builder({'project': '', 'files': [], 'service': '', 'image': 'x'}))
+
+    def test_crashed_is_restarting_or_a_failed_exit(self):
+        from unittest import mock
+        from hub import server
+        ps = '\n'.join(json.dumps(r) for r in [
+            {'Names': 'ok', 'State': 'running', 'Status': 'Up 2 hours'},
+            {'Names': 'done', 'State': 'exited', 'Status': 'Exited (0) 1 hour ago'},
+            {'Names': 'boom', 'State': 'exited', 'Status': 'Exited (1) 5 minutes ago'},
+            {'Names': 'loop', 'State': 'restarting', 'Status': 'Restarting (1) 3 seconds ago'},
+        ])
+        with mock.patch.object(server, 'sh', return_value=ps):
+            self.assertEqual(server.crashed(), ['boom', 'loop'])
+
+    def test_server_page_is_opt_in(self):
+        from django.contrib.auth.models import User
+        from django.core.cache import cache
+        from unittest import mock
+        from hub import server
+        cache.clear()
+        self.client.force_login(User.objects.create_user('me', password='pw'))
+        with override_settings(LIFEHUB={}):
+            self.assertEqual(self.client.get('/api/server/').status_code, 404)
+            self.assertEqual(self.client.get('/api/tiles/nav/').json()['data']['server'], False)
+        with override_settings(LIFEHUB={'server': True}), mock.patch.object(server, 'crashed', return_value=['boom']):
+            self.assertTrue(self.client.get('/api/tiles/nav/').json()['data']['down'])
+            with mock.patch.object(server, 'containers', side_effect=FileNotFoundError('docker')):
+                r = self.client.get('/api/server/')
+            self.assertEqual(r.status_code, 503)
+
