@@ -11,7 +11,7 @@ A personal dashboard that runs on your own machine:
 You need [Claude Code](https://claude.com/claude-code). Claude sets everything else up with you.
 
 ```
-git clone <this repo> lifehub
+git clone https://github.com/gtemple/lifehub-kit.git lifehub
 cd lifehub
 claude
 ```
