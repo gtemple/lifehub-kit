@@ -265,8 +265,8 @@ class Sender(models.Model):
 
 
 class Receipt(models.Model):
-    """A receipt, order or shipping email, read once by Ollama: feeds Packages and Renewing this week."""
-    KINDS = ['shipment', 'renewal', 'cancelled', 'purchase', 'other']
+    """A receipt, order, shipping or booking email, read once by Ollama: feeds Packages, Renewing this week and Coming up."""
+    KINDS = ['shipment', 'renewal', 'cancelled', 'purchase', 'event', 'other']
     STATUSES = ['ordered', 'shipped', 'out_for_delivery', 'delivered', 'none']
 
     account = models.CharField(max_length=20)
@@ -281,6 +281,10 @@ class Receipt(models.Model):
     eta = models.DateField(null=True, blank=True)
     renews_on = models.DateField(null=True, blank=True)
     amount = models.FloatField(null=True, blank=True)
+    starts = models.DateTimeField(null=True, blank=True)  # events (and cancelled bookings): when it happens
+    ends = models.DateTimeField(null=True, blank=True)
+    all_day = models.BooleanField(default=False)
+    place = models.CharField(max_length=120, blank=True)
     model = models.CharField(max_length=10, default='ollama')
 
     class Meta:

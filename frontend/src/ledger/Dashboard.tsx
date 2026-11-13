@@ -8,7 +8,7 @@ import { setDesign } from '../design'
 import { loadLedgerLayout } from '../layout'
 import { Shell } from '../Shell'
 import { clock, when } from '../time'
-import type { Approval, CalendarEvent, Email, EmailAccount, EmailGroup, MorningBrief, NewsTile, Note, SocialPost, Story, Streak, Task, Waiting, Watch } from '../types'
+import type { Approval, CalendarEvent, ComingEvent, Email, EmailAccount, EmailGroup, MorningBrief, NewsTile, Note, SocialPost, Story, Streak, Task, Waiting, Watch } from '../types'
 import { useConfirm } from './Confirm'
 import { Bars } from './dash/Bars'
 import { isoDay, pct, untilText } from './dash/data'
@@ -187,6 +187,7 @@ export function Dashboard() {
   const mailweek = useTile<never, MailWeek>('mailweek', 60 * MIN)
   const approvals = useTile<Approval>('approvals', 30_000)
   const calendar = useTile<CalendarEvent>('calendar', 5 * MIN)
+  const coming = useTile<ComingEvent>('coming', 10 * MIN)
   const tasks = useTile<Task>('tasks', 30_000)
   const waiting = useTile<Waiting>('waiting', 10 * MIN)
   const streak = useTile<never, Streak>('streak', 60 * MIN)
@@ -219,7 +220,7 @@ export function Dashboard() {
     approvals: <Stamp items={pending} onDecide={decide} />,
     inbox: <Inbox inbox={inbox} onDrafted={approvals.refresh} />,
     mail: <MailChart w={mailweek.res?.data} failed={mailweek.failed || !!mailweek.res} />,
-    today: <Today t={calendar} now={now} />,
+    today: <Today t={calendar} c={coming} now={now} />,
     tasks: <Todo t={tasks} w={waiting} />,
     streak: <InboxZero t={streak} />,
     prices: <PriceWatch t={prices} />,

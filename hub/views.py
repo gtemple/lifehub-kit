@@ -230,7 +230,7 @@ def crashed():
 LIVE['nav'] = nav_tile
 
 
-LIVE_ITEMS = {'prices': prices_tile, 'packages': lambda: {'items': receipts.packages()}, 'renewals': lambda: {'items': receipts.renewals()}, 'brief': brief_tile, 'approvals': approvals_tile, 'activity': activity_tile, 'calendar': calendar_tile, 'tasks': tasks_tile, 'waiting': lambda: {'items': waiting.waiting()}, 'notes': notes_tile, 'news': news_tile, 'week': weekly.tile, 'mailweek': weekly.days_tile}
+LIVE_ITEMS = {'prices': prices_tile, 'packages': lambda: {'items': receipts.packages()}, 'renewals': lambda: {'items': receipts.renewals()}, 'coming': lambda: {'items': receipts.coming_up()}, 'brief': brief_tile, 'approvals': approvals_tile, 'activity': activity_tile, 'calendar': calendar_tile, 'tasks': tasks_tile, 'waiting': lambda: {'items': waiting.waiting()}, 'notes': notes_tile, 'news': news_tile, 'week': weekly.tile, 'mailweek': weekly.days_tile}
 
 
 @login_required

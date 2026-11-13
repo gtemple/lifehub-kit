@@ -4,7 +4,7 @@ import type React from 'react'
 import { post } from '../../api'
 import type { TileState } from '../../api'
 import { ago, clock, due } from '../../time'
-import type { CalendarEvent, NewsTile, Note, SocialPost, Story, Streak, Task, Waiting, Watch } from '../../types'
+import type { CalendarEvent, ComingEvent, NewsTile, Note, SocialPost, Story, Streak, Task, Waiting, Watch } from '../../types'
 import { isoDay, untilText } from './data'
 import { PriceEditor } from './PriceEditor'
 
@@ -14,8 +14,11 @@ function Quiet<T, D>({ t, empty, what }: { t: TileState<T, D>; empty: boolean; w
   return empty ? <p className="lg-empty">Nothing here.</p> : null
 }
 
-export function Today({ t, now }: { t: TileState<CalendarEvent>; now: number }) {
+const dayOf = (iso: string) => new Date(iso).toLocaleDateString('en-CA', { weekday: 'short', day: 'numeric' })
+
+export function Today({ t, c, now }: { t: TileState<CalendarEvent>; c: TileState<ComingEvent>; now: number }) {
   const items = t.res?.items ?? []
+  const coming = c.res?.items ?? []
   const next = items.find(e => !e.allDay && Date.parse(e.start) > now)
   return (
     <section id="lgd-today" aria-labelledby="lgd-today-h" className="lgd-sec">
@@ -33,6 +36,24 @@ export function Today({ t, now }: { t: TileState<CalendarEvent>; now: number }) 
           </div>
         )
       })}
+      {coming.length > 0 && (
+        <div role="group" aria-label="Coming up, from your mail">
+          <h3 className="lgd-task-group lg-xs lg-dim">Coming up · from mail, not on your calendar</h3>
+          {coming.map(e => (
+            <div key={e.id} className="lgd-event" data-nav tabIndex={-1}>
+              <span className="lg-dim">{dayOf(e.start)}</span>
+              <div>
+                <div>{e.title}</div>
+                <div className="lg-row lg-wrap lg-dim lg-xs">
+                  <span>{[e.allDay ? (e.end ? `until ${dayOf(e.end)}` : 'all day') : clock(e.start), e.where].filter(Boolean).join(' · ')}</span>
+                  <a className="lg-link" href={e.add} target="_blank" rel="noreferrer" aria-label={`Add “${e.title}” to Google Calendar`}>+ Calendar</a>
+                  {e.url && <a className="lg-link" href={e.url} target="_blank" rel="noreferrer" aria-label={`Open the email about “${e.title}” in Gmail`}>↗</a>}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   )
 }

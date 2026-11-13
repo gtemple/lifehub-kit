@@ -22,11 +22,11 @@ def fetch(url):
         return r.read()
 
 
-def events_on(ics, day, account):
+def events_on(ics, day, account, days=1):
     tz = timezone.get_current_timezone()
     start = datetime.combine(day, time.min, tz)
     out = []
-    for ev in recurring_ical_events.of(icalendar.Calendar.from_ical(ics)).between(start, start + timedelta(days=1)):
+    for ev in recurring_ical_events.of(icalendar.Calendar.from_ical(ics)).between(start, start + timedelta(days=days)):
         if str(ev.get('STATUS', '')).upper() == 'CANCELLED':
             continue
         s, e = ev.decoded('DTSTART'), ev.decoded('DTEND') if ev.get('DTEND') else None

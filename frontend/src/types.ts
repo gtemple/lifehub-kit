@@ -58,6 +58,8 @@ export type NewsTile = { brief: Brief | null; stories: Story[]; sourceCount?: nu
 
 export type MorningBrief = { kind: 'morning' | 'evening'; text: string; writtenAt: string; model: ModelName }
 
+export type ComingEvent = { id: string; title: string; start: string; end: string | null; allDay: boolean; where: string; account: EmailAccount; url: string; add: string }
+
 export type CalendarEvent = { id: string; start: string; end: string; title: string; where?: string; calendar: EmailAccount; highlight?: boolean; allDay?: boolean }
 
 export type Task = {

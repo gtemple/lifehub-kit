@@ -790,6 +790,48 @@ class ReceiptTests(TestCase):
         Receipt.objects.create(account='personal', uid='cancel-1', received=timezone.now() + timedelta(minutes=1), kind='cancelled', merchant='Google Play', item='Duolingo')
         self.assertEqual(receipts.renewals(), [])  # cancelled after the renewal notice
 
+    def test_coming_up_from_bookings(self):
+        from datetime import datetime, timedelta
+        from unittest.mock import patch
+
+        from django.test import override_settings
+        from django.utils import timezone
+
+        from hub import receipts
+        from hub.models import Receipt
+        now = timezone.now().replace(microsecond=0)
+        day = timezone.localtime(now + timedelta(days=3)).date().isoformat()
+        out = iter([
+            {'kind': 'event', 'item': 'Dinner at La Toile', 'merchant': 'La Toile', 'status': 'none', 'eta': '', 'renews_on': '', 'amount': None,
+             'starts': f'{day}T19:30', 'ends': '', 'timezone': 'America/Toronto', 'place': 'La Toile'},
+            {'kind': 'cancelled', 'item': 'La Toile booking', 'merchant': 'La Toile', 'status': 'none', 'eta': '', 'renews_on': '', 'amount': None,
+             'starts': f'{day}T19:30', 'ends': '', 'timezone': 'Nowhere/Bogus', 'place': ''},
+            {'kind': 'event', 'item': 'Airbnb in Vancouver', 'merchant': 'Airbnb', 'status': 'none', 'eta': '', 'renews_on': '', 'amount': None,
+             'starts': day, 'ends': (timezone.localtime(now + timedelta(days=6)).date().isoformat()), 'timezone': 'America/Vancouver', 'place': 'Vancouver'},
+            {'kind': 'event', 'item': 'Flight YUL to YVR', 'merchant': 'Flair', 'status': 'none', 'eta': '', 'renews_on': '', 'amount': None,
+             'starts': f'{day}T07:00', 'ends': f'{day}T09:30', 'timezone': 'America/Toronto', 'place': 'YUL'},
+            # the boarding pass: another name for the airline, no time
+            {'kind': 'event', 'item': 'Flight YUL to YVR', 'merchant': 'FlyFlair', 'status': 'none', 'eta': '', 'renews_on': '', 'amount': None,
+             'starts': f'{day}T00:00', 'ends': '', 'timezone': '', 'place': 'YUL'},
+        ])
+        with patch.object(receipts.triage, 'ollama_json', side_effect=lambda *a: next(out)):
+            for uid, hours in [('a', 50), ('b', 2), ('c', 30), ('d', 20), ('e', 1)]:
+                receipts.read('personal', self.mail(uid, 'Booking', hours))
+        with override_settings(LIFEHUB={'calendar': []}):
+            rows = receipts.coming_up(now)
+        # the reservation was cancelled after it was made; earliest first
+        self.assertEqual([r['title'] for r in rows], ['Airbnb in Vancouver', 'Flight YUL to YVR'])
+        stay, flight = rows
+        self.assertTrue(stay['allDay'])
+        self.assertIn(f"dates={day.replace('-', '')}%2F", stay['add'])
+        self.assertIn('action=TEMPLATE', flight['add'])
+        self.assertEqual(timezone.localtime(datetime.fromisoformat(flight['start'])).hour, 7)
+        # already on the calendar (Gmail adds flights itself): hidden
+        r = Receipt.objects.get(uid='d')
+        listed = [{'start': timezone.localtime(r.starts + timedelta(minutes=10)).isoformat(), 'end': '', 'title': 'Flight to Vancouver', 'allDay': False}]
+        with patch.object(receipts, 'on_calendar', return_value=listed):
+            self.assertEqual([x['title'] for x in receipts.coming_up(now)], ['Airbnb in Vancouver'])
+
     def test_reply_zero_streak(self):
         from datetime import date
 
