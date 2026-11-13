@@ -14,12 +14,12 @@ If `lifehub.toml` already exists, read it, say what's configured, and ask what t
 Ask in small batches (AskUserQuestion when it fits), wait for answers:
 
 1. **Who**: first name and full name (drafted email replies are signed with it). Pronouns aren't needed; the prompts use "them".
-2. **Where and how it runs**: this machine only, or an always-on box (mini PC, Raspberry Pi 5, old laptop)? Linux, macOS or Windows (WSL)? The fetch job needs to run every few minutes, so an always-on machine is best.
+2. **Where and how it runs**: this machine only, or an always-on box (mini PC, Raspberry Pi 5, old laptop)? Linux, macOS or Windows (WSL)? The fetch job needs to run every few minutes, so an always-on machine is best. On a laptop, say plainly: while it sleeps, mail isn't sorted or drafted and the 7:40 brief waits until it wakes. Fine to try it out; a spare always-on machine is better long-term.
    Then: **Docker** (recommended if they have it or are happy to install it: one command to run, easy to move) or **native** (uv + pm2/systemd)?
 3. **Location**: city (for weather and the time zone). Look up lat/lon and the IANA time zone yourself; confirm them.
-4. **Email**: which Gmail / Google Workspace accounts (a short name each, like Personal or Work). Other IMAP providers work if they give host + app password; say so if they use one.
+4. **Email**: which Gmail / Google Workspace accounts (a short name each, like Personal or Work). Other IMAP providers work if they give host + app password; say so if they use one. Warn up front: work (Workspace) accounts often have app passwords blocked by their admin; if so, skip that account for now and add it later in Settings → Connections once IT allows it.
 5. **Calendar**: Google calendars to show on Today (optional).
-6. **News**: topics they care about, and the sites, subreddits, blogs or newsletters they already read. Find a feed for each source they name (Reddit: `https://www.reddit.com/r/<sub>/.rss`; Substack: `<name>.substack.com/feed`; otherwise look for the site's RSS/Atom link), then propose 2–3 more per topic to fill gaps. Verify every URL returns a feed with curl before adding it. Each feed gets a `topic`; the news brief favours the topics in `YOUR_INTERESTS`.
+6. **News**: topics they care about, and the sites, subreddits, blogs or newsletters they already read. Find a feed for each source they name (Reddit: `https://www.reddit.com/r/<sub>/.rss`; Substack: `<name>.substack.com/feed`; otherwise look for the site's RSS/Atom link), then propose 2–3 more per topic to fill gaps. Verify every URL returns a feed with curl before adding it. A source with no public feed (paywalled, like The Athletic): say so, and offer a Google News search feed for its headlines instead, `https://news.google.com/rss/search?q=site:<domain>+<topic>&hl=en`, which links to the site (they still need their subscription to read). Each feed gets a `topic`; the news brief favours the topics in `YOUR_INTERESTS`.
 7. **AI models**: Lifehub sorts mail, drafts replies and writes a day brief with a model.
    - Ollama (local, free, private; needs ~8 GB RAM for `qwen3.5:4b`, more for bigger models). Recommend this for private data.
    - Gemini API key (optional; cheap, used for news and the AI daily card, and for private data only if they turn it on in Settings).
@@ -50,7 +50,7 @@ Prerequisite: Docker with the compose plugin (`docker compose version`). On macO
    PROJECTS_DIR=/absolute/path/to/their/projects
    ```
 3. Ollama in a container: add `COMPOSE_PROFILES=ollama` to `.env` (so plain `docker compose up` includes it).
-4. `docker compose up -d --build`, then `docker compose exec web python manage.py createsuperuser` (they type their own password: tell them to run it with `! ` in Claude Code).
+4. `docker compose up -d --build`, then have them create their login **in their own terminal** (it prompts for a password, which Claude Code can't answer): `docker compose exec web python manage.py createsuperuser`.
 5. Ollama in a container: `docker compose exec ollama ollama pull <model>`.
 6. Check `docker compose ps` and `docker compose logs web fetch`.
 
@@ -63,7 +63,7 @@ Check prerequisites first and walk them through any that are missing: `uv` (http
 ```
 uv sync
 uv run manage.py migrate
-uv run manage.py createsuperuser   # they type their own password; tell them to run it with `! ` in Claude Code
+uv run manage.py createsuperuser   # prompts for a password: have them run it in their own terminal, not through Claude
 cd frontend && npm ci && npm run build && cd ..
 uv run manage.py collectstatic --noinput
 uv run manage.py test hub
@@ -73,7 +73,7 @@ uv run manage.py test hub
 
 For each, walk through getting the credential, write it, then verify before the next:
 
-- **Gmail**: needs 2-Step Verification on, then an app password at https://myaccount.google.com/apppasswords. Verify: start the server and use Settings → Connections → test, or a one-off `uv run manage.py fetch` and check for errors.
+- **Gmail**: needs 2-Step Verification on, then an app password at https://myaccount.google.com/apppasswords. "The setting you are looking for is not available" with 2-Step on means a Workspace admin blocked it: skip the account (see Phase 1). Verify: start the server and use Settings → Connections → test, or a one-off `uv run manage.py fetch` and check for errors.
 - **Calendar**: Google Calendar → Settings → the calendar → Integrate calendar → "Secret address in iCal format". Verify with `curl -s <url> | head -3` (should start `BEGIN:VCALENDAR`).
 - **Ollama**: install from https://ollama.com, `ollama pull <model>`, verify `curl -s localhost:11434/api/tags`.
 - **Gemini**: key from https://aistudio.google.com/apikey. Verify with one cheap request.

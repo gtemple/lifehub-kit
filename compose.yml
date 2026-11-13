@@ -9,7 +9,7 @@ services:
     ports: ["8400:8400"]
     volumes:
       - ./lifehub.toml:/app/lifehub.toml:ro
-      - ./data:/data
+      - data:/data  # a Docker volume, not a host folder: SQLite locking is unreliable over Docker Desktop's file sharing
     extra_hosts: ["host.docker.internal:host-gateway"]  # Ollama on the host: ollama_url = "http://host.docker.internal:11434"
     restart: unless-stopped
 
@@ -18,7 +18,7 @@ services:
     command: python manage.py fetch --every 300
     volumes:
       - ./lifehub.toml:/app/lifehub.toml:ro
-      - ./data:/data
+      - data:/data
     extra_hosts: ["host.docker.internal:host-gateway"]
     depends_on: [web]  # web runs the migrations
     restart: unless-stopped
@@ -35,4 +35,5 @@ services:
     #       devices: [{ driver: nvidia, count: all, capabilities: [gpu] }]
 
 volumes:
+  data:
   ollama:

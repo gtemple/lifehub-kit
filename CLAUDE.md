@@ -9,7 +9,7 @@ A personal dashboard: Gmail inbox sorted and summarized by a model, drafted repl
 - `hub/` the one Django app. `views.py` serves the API and tiles; `management/commands/fetch.py` is the background job (mail, triage, drafts, news, brief, prices).
 - Models: `hub/health.py` picks Ollama; `hub/triage.py` has the Ollama/Gemini calls. Private data (mail, notes, calendar) goes to Ollama, or to Gemini only when allowed in Settings.
 - `hub/server.py` + `frontend/src/ledger/ServerPage.tsx`: the optional Server page (`server = true`), driving the docker CLI.
-- Docker: `Dockerfile`, `compose.yml` (web, fetch, optional `ollama` profile), `compose.server.yml` (opt-in Docker socket for the Server page). The database lives in `LIFEHUB_DATA` (`./data` in Docker).
+- Docker: `Dockerfile`, `compose.yml` (web, fetch, optional `ollama` profile), `compose.server.yml` (opt-in Docker socket for the Server page). The database lives in `LIFEHUB_DATA` (the `data` volume in Docker).
 - `frontend/` React + Vite. Two looks: `ledger/` (default) and the retro one (`App.tsx`, `tiles/`). Built to `frontend/dist`, served by Django.
 
 ## Commands
